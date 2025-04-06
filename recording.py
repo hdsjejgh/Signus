@@ -1,6 +1,8 @@
+from logging import exception
+
 from mp_functions import *
 from const import *
-rec = True
+rec = False
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import shutil
@@ -8,12 +10,14 @@ import shutil
 def create_folders(): #Creates all the folders
     for symbol in SYMBOLS: #makes a symbol for each folder
         try:
-            os.makedirs(os.path.join(DATA_DIR,symbol))
-            for vid in range(VID_NUM): #makes a directory for each video
+            #os.makedirs(os.path.join(DATA_DIR,symbol))
+            for vid in range(60,90): #makes a directory for each video
                 #each video will have 30 frame files in them
+                if os.path.isdir(os.path.join(DATA_DIR, symbol,str(vid))):
+                    os.rmdir(os.path.join(DATA_DIR, symbol,str(vid)))
                 os.makedirs(os.path.join(DATA_DIR, symbol,str(vid)))
-        except:
-            print(f"Error Occurred when making folder for {symbol}")
+        except exception as e:
+            print(f"Error Occurred when making folder for {symbol}. {e}")
 
 def clear(symbol): #clear's a symbol's directory by removing and recreating it
     global rec
@@ -23,13 +27,14 @@ def clear(symbol): #clear's a symbol's directory by removing and recreating it
         os.makedirs(os.path.join(DATA_DIR, symbol, str(vid)))
     rec = False
 
+create_folders()
+
 breakouter = False
-currently_recording = "z"
-#clear('x')
+currently_recording = "M3down"
 if rec:
     capture = cv.VideoCapture(0)
     with mp_holistic.Holistic(min_tracking_confidence=0.5,min_detection_confidence=0.5) as holistic:
-        for video in range(VID_NUM):
+        for video in range(60,90):
 
 
             ret, frame = capture.read()
